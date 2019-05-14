@@ -12,5 +12,14 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $name = 'Mi tiendita online';
+
+    return view('welcome', compact('name'));
 });
+
+Route::get('/orders', 'OrdersController@getAllOrders');
+Route::get('/orders/{orderUID}', 'OrdersController@getOrderByUid');
+
+Route::post('/orders', 'OrdersController@generateOrder')->name('order-generate');
+Route::post('/order/{orderUID}', 'OrdersController@payOrder');
+
