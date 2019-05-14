@@ -1,99 +1,56 @@
-<!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('template.app')
 
-        <title>Laravel</title>
+@section('title', $name)
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+@section('content')
+<div class="jumbotron">
+  <h1 class="display-4">Bienvenido a <strong>{{ $name }}</strong></h1>
+  <p class="lead">Como somos una tienda pequeña, solo tenemos un solo producto.</p>
+  <hr class="my-4">
+  <p class="mt-2">Tiene un costo de <strong>$1.000 COP</strong>. ¿Deseas comprarlo?</p>
+  <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#customerDetail" role="button">Si, deseo comprarlo!</button>
+</div>
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
-
-            .full-height {
-                height: 100vh;
-            }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
-
-            <div class="content">
-                <div class="title m-b-md">
-                    Laravel
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
+<!-- Modal -->
+<div class="modal fade" id="customerDetail" tabindex="-1" role="dialog" aria-labelledby="customerDetailLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="customerDetailLabel">Información del cliente</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+				<form id="customerForm" action="{{ route('order-generate') }}" method="POST">
+						@csrf
+						<div class="form-group">
+                <label for="inputName">Nombre</label>
+								<input type="text" class="form-control" name="name" id="inputName" 
+									placeholder="Nombre" required>
             </div>
-        </div>
-    </body>
-</html>
+            <div class="form-group">
+                <label for="inputEmail">Email address</label>
+								<input type="email" class="form-control" name="email" id="inputEmail" 
+									aria-describedby="emailHelp" placeholder="Enter email" required>
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <div class="form-group">
+                <label for="inputMobile">Número de celular</label>
+								<input type="text" class="form-control" name="phone" id="inputMobile" 
+									placeholder="Número de celular" required>
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" name="terms" class="form-check-input" id="exampleCheck1" required>
+                <label class="form-check-label" for="exampleCheck1">Acepto los terminos y condiciones.</label>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" onclick="document.getElementById('customerForm').submit()" class="btn btn-primary">Continuar</button>
+      </div>
+    </div>
+  </div>
+</div>
+@endsection
