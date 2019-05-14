@@ -18,8 +18,8 @@ Route::get('/', function () {
 });
 
 Route::get('/orders', 'OrdersController@getAllOrders');
-Route::get('/orders/{orderUID}', 'OrdersController@getOrderByUid');
+Route::get('/orders/{orderUID}', 'OrdersController@getOrderByUid')->name('order-detail');
 
 Route::post('/orders', 'OrdersController@generateOrder')->name('order-generate');
-Route::post('/order/{orderUID}', 'OrdersController@payOrder');
+Route::get('/process-pay', 'OrdersController@processPay')->name('process-pay');
 

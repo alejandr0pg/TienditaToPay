@@ -19,7 +19,7 @@ class CreateOrdersTable extends Migration
             $table->string('customer_email', 120);
             $table->string('customer_mobile', 40);
             $table->string('pay_reference')->nullable();
-            $table->string('status', 20);
+            $table->string('status', 20)->default('CREATED')->comment('“CREATED, PAYED, REJECTED”');
             $table->timestamps();
         });
     }

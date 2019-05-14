@@ -14,43 +14,42 @@
 <!-- Modal -->
 <div class="modal fade" id="customerDetail" tabindex="-1" role="dialog" aria-labelledby="customerDetailLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="customerDetailLabel">Información del cliente</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+    <form name="customerForm" action="{{ route('order-generate') }}" method="POST">
+      @csrf
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="customerDetailLabel">Información del cliente</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+              <label for="inputName">Nombre</label>
+              <input type="text" class="form-control" name="name" id="inputName" 
+                placeholder="Nombre" required>
+          </div>
+          <div class="form-group">
+              <label for="inputEmail">Email address</label>
+              <input type="email" class="form-control" name="email" id="inputEmail" 
+                aria-describedby="emailHelp" placeholder="Enter email" required>
+          </div>
+          <div class="form-group">
+              <label for="inputMobile">Número de celular</label>
+              <input type="text" class="form-control" name="phone" id="inputMobile" 
+                placeholder="Número de celular" required>
+          </div>
+          <div class="form-group form-check">
+              <input type="checkbox" name="terms" class="form-check-input" id="exampleCheck1" required>
+              <label class="form-check-label" for="exampleCheck1">Acepto los terminos y condiciones.</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-primary">Continuar</button>
+        </div>
       </div>
-      <div class="modal-body">
-				<form id="customerForm" action="{{ route('order-generate') }}" method="POST">
-						@csrf
-						<div class="form-group">
-                <label for="inputName">Nombre</label>
-								<input type="text" class="form-control" name="name" id="inputName" 
-									placeholder="Nombre" required>
-            </div>
-            <div class="form-group">
-                <label for="inputEmail">Email address</label>
-								<input type="email" class="form-control" name="email" id="inputEmail" 
-									aria-describedby="emailHelp" placeholder="Enter email" required>
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-            </div>
-            <div class="form-group">
-                <label for="inputMobile">Número de celular</label>
-								<input type="text" class="form-control" name="phone" id="inputMobile" 
-									placeholder="Número de celular" required>
-            </div>
-            <div class="form-group form-check">
-                <input type="checkbox" name="terms" class="form-check-input" id="exampleCheck1" required>
-                <label class="form-check-label" for="exampleCheck1">Acepto los terminos y condiciones.</label>
-            </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-        <button type="button" onclick="document.getElementById('customerForm').submit()" class="btn btn-primary">Continuar</button>
-      </div>
-    </div>
+    </form>
   </div>
 </div>
 @endsection
