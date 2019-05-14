@@ -17,7 +17,7 @@ class OrdersController extends Controller
 
     public function getOrderByUid(Request $request, $uid)
     {
-        $order = Order::where('uid', '==', $uid)->firstOrFail();
+        $order = Order::findOrFail($uid)->firstOrFail();
 
         return view('orders.detail', compact('order'));
     }
