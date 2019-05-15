@@ -15,9 +15,9 @@ Route::get('/', function () {
     $name = 'Mi tiendita online';
 
     return view('welcome', compact('name'));
-});
+})->name('home');
 
-Route::get('/orders', 'OrdersController@getAllOrders');
+Route::get('/orders', 'OrdersController@getAllOrders')->name('orders');
 Route::get('/orders/{orderUID}', 'OrdersController@getOrderByUid')->name('order-detail');
 
 Route::post('/orders', 'OrdersController@generateOrder')->name('order-generate');

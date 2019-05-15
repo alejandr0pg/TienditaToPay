@@ -7,6 +7,10 @@ use App\Order;
 
 class OrdersController extends Controller
 {
+    public function __construct()
+    {
+        view()->share('name', 'Mi tiendita online');
+    }
     //
     public function getAllOrders(Request $request)
     {
@@ -17,7 +21,7 @@ class OrdersController extends Controller
 
     public function getOrderByUid(Request $request, $uid)
     {
-        $order = Order::findOrFail($uid)->firstOrFail();
+        $order = Order::findOrFail($uid);
 
         return view('orders.detail', compact('order'));
     }
@@ -29,6 +33,7 @@ class OrdersController extends Controller
         $order->customer_name = $request->name;
         $order->customer_email = $request->email;
         $order->customer_mobile = $request->phone;
+        $order->amount = 10000;
         $order->save();
 
         // Payment data
@@ -48,7 +53,7 @@ class OrdersController extends Controller
                 'description' => 'Pago del unico producto de la tienda #' . $order->id,
                 'amount' => [
                     'currency' => 'COP',
-                    'total' => '1000'
+                    'total' => $order->amount
                 ]
             ],
             'expiration' => date('c', time() + 3600), // +1h
@@ -82,7 +87,37 @@ class OrdersController extends Controller
     {
         // Obtenemos la orden
         $order = Order::findOrFail($request->ref);
-        $order->status = 'PAYED';
+        
+        // Payment data
+        $seed = date('c');
+        $nonce = $this->generateNonce();
+        $secretKey = '024h1IlD';
+        $tranKey = base64_encode(sha1($nonce . $seed . $secretKey, true));
+        $authData = [
+            'auth' => [
+                'login' => '6dd490faf9cb87a9862245da41170ff2',
+                'seed' => $seed,
+                'nonce' => base64_encode($nonce),
+                'tranKey' => $tranKey
+            ]
+        ];
+        // Comprobamos la info
+        $client = new \GuzzleHttp\Client();
+        $response = $client->post('https://dev.placetopay.com/redirection/api/session/' . $order->pay_reference, [
+            'json' => $authData
+        ]);
+
+        // Decodificamos la respuesta
+        $json = json_decode($response->getBody());
+        
+        if($json->status->status === 'REJECTED') {
+            $order->status = 'REJECTED';
+        } elseif($json->status->status === 'PENDING') {
+            $order->status = 'PENDING';
+        } elseif($json->status->status === 'APPROVED') {
+            $order->status = 'PAYED';
+        }
+        //
         $order->save();
 
         return redirect()->route('order-detail', ['orderUID' => $order->id]);
