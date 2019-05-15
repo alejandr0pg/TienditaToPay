@@ -7,7 +7,7 @@
   <h1 class="display-4">Bienvenido a <strong>{{ $name }}</strong></h1>
   <p class="lead">Como somos una tienda pequeña, solo tenemos un solo producto.</p>
   <hr class="my-4">
-  <p class="mt-2">Tiene un costo de <strong>$1.000 COP</strong>. ¿Deseas comprarlo?</p>
+  <p class="mt-2">Tiene un costo de <strong>$10.000 COP</strong>. ¿Deseas comprarlo?</p>
   <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#customerDetail" role="button">Si, deseo comprarlo!</button>
 </div>
 

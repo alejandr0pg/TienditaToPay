@@ -25,12 +25,11 @@
 					<tbody>
 						<tr>
 							<td class="center">1</td>
-							<td class="left strong">Origin License</td>
-							<td class="left">Extended License</td>
-							
-							<td class="right">$999,00</td>
-									<td class="center">1</td>
-							<td class="right">$999,00</td>
+							<td class="left strong">Unique</td>
+							<td class="left">Unique product</td>
+							<td class="right">$10.000 COP</td>
+							<td class="center">1</td>
+							<td class="right">$10.000 COP</td>
 						</tr>
 					</tbody>
 				</table>
