@@ -23,6 +23,24 @@ class OrdersController extends Controller
     {
         $order = Order::findOrFail($uid);
 
+        if( $order->pay_reference ) {
+            //
+            $response = $this->checkOrderStatus($order);
+            switch ($response->status->status) {
+                case 'REJECTED':
+                    $order->status = 'REJECTED';
+                    break;
+                case 'PENDING':
+                    $order->status = 'PENDING';
+                    break;
+                case 'APPROVED':
+                    $order->status = 'PAYED';
+                    break;
+            }
+            //
+            $order->save();
+        }
+
         return view('orders.detail', compact('order'));
     }
 
@@ -57,13 +75,14 @@ class OrdersController extends Controller
                 ]
             ],
             'expiration' => date('c', time() + 3600), // +1h
-            'returnUrl' => route('process-pay', ['ref' => $order->id]),
+            'returnUrl' => route('order-detail', ['orderUID' => $order->id]),
             'ipAddress' => $request->ip() != "::1" ? $request->ip() : '127.0.0.1',
             'userAgent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.82 Safari/537.36'
         ];
 
         $client = new \GuzzleHttp\Client();
-        $response = $client->post('https://dev.placetopay.com/redirection/api/session', [
+        $response = $client->post(
+            'https://dev.placetopay.com/redirection/api/session', [
             'json' => $paymentData
         ]);
         
@@ -83,12 +102,9 @@ class OrdersController extends Controller
         }
     }
 
-    public function processPay(Request $request)
+    public function checkOrderStatus($order)
     {
-        // Obtenemos la orden
-        $order = Order::findOrFail($request->ref);
-        
-        // Payment data
+        // Auth data
         $seed = date('c');
         $nonce = $this->generateNonce();
         $secretKey = '024h1IlD';
@@ -101,26 +117,16 @@ class OrdersController extends Controller
                 'tranKey' => $tranKey
             ]
         ];
+
         // Comprobamos la info
         $client = new \GuzzleHttp\Client();
-        $response = $client->post('https://dev.placetopay.com/redirection/api/session/' . $order->pay_reference, [
+        $response = $client->post(
+            'https://dev.placetopay.com/redirection/api/session/' . $order->pay_reference, [
             'json' => $authData
         ]);
 
         // Decodificamos la respuesta
-        $json = json_decode($response->getBody());
-        
-        if($json->status->status === 'REJECTED') {
-            $order->status = 'REJECTED';
-        } elseif($json->status->status === 'PENDING') {
-            $order->status = 'PENDING';
-        } elseif($json->status->status === 'APPROVED') {
-            $order->status = 'PAYED';
-        }
-        //
-        $order->save();
-
-        return redirect()->route('order-detail', ['orderUID' => $order->id]);
+        return json_decode($response->getBody());
     }
 
     public function generateNonce() {
